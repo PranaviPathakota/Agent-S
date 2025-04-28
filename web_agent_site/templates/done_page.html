@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="icon" href="data:,">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You | Agent-S</title>
+  </head>
+  <body>
+    <div class="container" style="margin-top: 5%;">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="thank-you-card">
+          <div class="card-header">
+            <div id="logo" class="text-center">
+              <h2><i class="fas fa-shopping-cart"></i> Agent-S</h2>
+            </div>
+          </div>
+          
+          <div class="card-body">
+            <div id="thankyou" class="text-center">
+              <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <h1>Thank you for shopping with us!</h1>
+              <p class="lead">Your order has been successfully placed.</p>
+            </div>
+            
+            <div class="text-center">
+              <div class="reward-section text-center">
+                <hr class="divider">
+                <h3 id="reward">Your Score: <span class="score-value">{{ reward }}</span></h3>
+                <p class="score-info">(Min: 0.0, Max: 1.0)</p>
+              </div>
+            </div>
+            
+            <div style="display:none">
+              <h2 align="left">Purchased</h2>
+              <hr class="solid">
+              <h4 id="asin">asin<pre>{{ asin }}</pre></h4>
+              <h4 id="options">options<pre>{{ options | tojson }}</pre></h4>
+              <h4 id="purchased_attrs">attrs<pre>{{ purchased_attrs }}</pre></h4>
+              <h4 id="purchased-category">category<pre>{{ category }}</pre></h4>
+              <h4 id="purchased-query">query<pre>{{ query }}</pre></h4>
+              <h4 id="purchased-pc">product category<pre>{{ product_category }}</pre></h4>
+              <h2 align="left">Target</h2>
+              <hr class="solid">
+              <h4 id="goal-asin">asin<pre>{{ goal.asin }}</pre></h4>
+              <h4 id="goal-options">options<pre>{{ goal.goal_options }}</pre></h4>
+              <h4 id="goal-attrs">attrs<pre>{{ goal.attributes }}</pre></h4>
+              <h4 id="goal-price">price upper<pre>{{ goal.price_upper }}</pre></h4>
+              <h4 id="goal-instruction-text">instuction text<pre>{{ goal.instruction_text }}</pre></h4>
+              <h4 id="goal-category">category<pre>{{ goal.category }}</pre></h4>
+              <h4 id="goal-pc">product category<pre>{{ goal.product_category }}</pre></h4>
+              <h4 id="goal-query">query<pre>{{ goal.query }}</pre></h4>
+              <h4>Goal <div id="goal"><pre>{{ goal | pprint }}</pre></div></h4>
+              <h2 align="center">Reward</h2>
+              <h4 hidden>Reward Details <div id="reward_info"><pre>{{ reward_info | pprint }}</pre></div></h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <style>
+      /* Additional styles for thank you/done page */
+      body {
+        background-color: #f5f7fa;
+      }
+      
+      .thank-you-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        overflow: hidden;
+      }
+      
+      .card-header {
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+      }
+      
+      .card-body {
+        padding: 40px 20px;
+      }
+      
+      .success-icon {
+        font-size: 80px;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+      }
+      
+      #thankyou h1 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+      }
+      
+      .lead {
+        color: #7f8c8d;
+        margin-bottom: 30px;
+      }
+      
+
+      
+      .divider {
+        margin: 30px 0;
+        border-top: 1px solid #e9ecef;
+      }
+      
+      .reward-section {
+        margin-top: 20px;
+        display: inline-block;
+        max-width: 500px;
+        width: 100%;
+      }
+      
+      .score-value {
+        font-size: 24px;
+        color: var(--primary-color);
+        font-weight: bold;
+      }
+      
+      .score-info {
+        font-size: 14px;
+        color: #7f8c8d;
+      }
+    </style>
+  </body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="icon" href="data:,">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent-S | Shopping Assistant</title>
+  </head>
+  <body>
+    <div class="container" style="margin-top: 5%;">
+      <div class="col-md-8 col-md-offset-2">     
+        <div class="row">
+          <div id="logo" class="text-center">
+            <h2><i class="fas fa-shopping-cart"></i> Agent-S</h2>
+            <p class="lead">Your intelligent shopping assistant</p>
+          </div>
+          
+          <div id="instruction-text" class="text-center">
+            <h4>Example Instruction: <br>{{ instruction_text }}</h4>
+          </div> 
+          
+          <div class="search-container">
+            <form role="form" id="form-buscar" method="post" action="{{url_for('index', session_id=session_id)}}">
+              <div class="form-group">
+                <div class="input-group">
+                  <input id="search_input" class="form-control" type="text" name="search_query" placeholder="What are you looking for today?" required/>
+                  <span class="input-group-btn">
+                    <button class="btn btn-success" type="submit"><i class="glyphicon glyphicon-search" aria-hidden="true"></i> Search</button>
+                  </span>
+                </div>
+              </div>
+            </form>
+          </div>
+          
+          <!-- Popular Categories -->
+          <div class="popular-categories text-center top-buffer">
+            <h4>Popular Categories</h4>
+            <div class="row">
+              <div class="col-xs-4 col-sm-4 category-item">
+                <div class="category-circle">
+                  <i class="fas fa-laptop"></i>
+                </div>
+                <p>Electronics</p>
+              </div>
+              <div class="col-xs-4 col-sm-4 category-item">
+                <div class="category-circle">
+                  <i class="fas fa-tshirt"></i>
+                </div>
+                <p>Clothing</p>
+              </div>
+              <div class="col-xs-4 col-sm-4 category-item">
+                <div class="category-circle">
+                  <i class="fas fa-home"></i>
+                </div>
+                <p>Home</p>
+              </div>
+            </div>
+          </div>
+        </div>            
+      </div>
+    </div>
+    
+    <style>
+      /* Additional styles for search page */
+      .search-container {
+        margin: 30px 0;
+      }
+      
+      .popular-categories {
+        margin-top: 40px;
+      }
+      
+      .category-item {
+        cursor: pointer;
+        transition: transform 0.3s;
+      }
+      
+      .category-item:hover {
+        transform: translateY(-5px);
+      }
+      
+      .category-circle {
+        width: 70px;
+        height: 70px;
+        background-color: #e9f7ef;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+      
+      .category-circle i {
+        font-size: 28px;
+        color: var(--primary-color);
+      }
+      
+      .lead {
+        color: #666;
+        margin-bottom: 30px;
+      }
+    </style>
+    
+    <script>
+      // Simple script to make category items clickable
+      document.addEventListener('DOMContentLoaded', function() {
+        const categoryItems = document.querySelectorAll('.category-item');
+        categoryItems.forEach(item => {
+          item.addEventListener('click', function() {
+            const category = this.querySelector('p').textContent;
+            document.getElementById('search_input').value = category;
+            document.getElementById('form-buscar').submit();
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

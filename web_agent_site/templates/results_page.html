@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <link rel="icon" href="data:,">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results | Agent-S</title>
+  </head>
+  <body>
+    <div class="container py-5">
+      <!-- Header with instruction -->
+      <div class="row top-buffer">
+        <div class="col-md-12">
+          <div id="logo" class="text-center">
+            <h2><i class="fas fa-shopping-cart"></i> Agent-S</h2>
+          </div>
+          <div id="instruction-text" class="text-center">
+            <h4>Instruction:<br>{{ instruction_text }}</h4>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Search and navigation controls -->
+      <div class="row top-buffer">
+        <div class="col-sm-4">
+          <form method="post" action="{{ url_for('index', session_id=session_id) }}">
+            <button type="submit" class="btn btn-success"><i class="fas fa-search"></i> New Search</button>
+          </form>
+        </div>
+        <div class="col-sm-8 text-right">
+          <div class="result-stats">
+            <h3>Page {{page}} of {{ (total / 10) | round(0, 'ceil') | int }} <small>({{total}} results)</small></h3>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Pagination controls -->
+      <div class="row top-buffer">
+        <div class="col-md-12 text-center">
+          <div class="pagination-container">
+            {% if page > 1 %}
+              <form class="d-inline" method="post" action="{{url_for('search_results', session_id=session_id, keywords=keywords, page=page - 1)}}">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-chevron-left"></i> Previous</button>
+              </form>
+            {% else %}
+              <button type="button" class="btn btn-primary" disabled><i class="fas fa-chevron-left"></i> Previous</button>
+            {% endif %}
+            
+            <span class="page-indicator">Page {{page}}</span>
+            
+            <form class="d-inline" method="post" action="{{url_for('search_results', session_id=session_id, keywords=keywords, page=page + 1)}}">
+              <button type="submit" class="btn btn-primary">Next <i class="fas fa-chevron-right"></i></button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product listings -->
+      <div class="row top-buffer">
+        {% for item in products %}
+        <div class="col-lg-12 mx-auto">
+          <div class="list-group-item product-card">
+            <div class="row">
+              <div class="col-lg-3 col-md-4">
+                <div class="product-img-container">
+                  <img src="{{item.MainImage}}" class="result-img" alt="Product image">
+                </div>
+              </div>
+              <div class="col-lg-9 col-md-8">
+                <div class="product-info">
+                  {% set item_page_url = url_for('item_page', session_id=session_id, asin=item.asin, keywords=keywords, page=page, options=dict() ) %}
+                  <h4 class="product-title">
+                    <a class="product-link" href="{{ item_page_url }}">{{item.Title}}</a>
+                  </h4>
+                  <div class="product-meta">
+                    <span class="product-price">{{item.Price}}</span>
+                    <span class="product-id">ID: {{item.asin}}</span>
+                  </div>
+                  <div class="view-details-btn">
+                    <a href="{{ item_page_url }}" class="btn btn-sm btn-primary">View Details</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      
+      <!-- Bottom pagination -->
+      <div class="row top-buffer">
+        <div class="col-md-12 text-center">
+          <div class="pagination-container">
+            {% if page > 1 %}
+              <form class="d-inline" method="post" action="{{url_for('search_results', session_id=session_id, keywords=keywords, page=page - 1)}}">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-chevron-left"></i> Previous</button>
+              </form>
+            {% else %}
+              <button type="button" class="btn btn-primary" disabled><i class="fas fa-chevron-left"></i> Previous</button>
+            {% endif %}
+            
+            <span class="page-indicator">Page {{page}}</span>
+            
+            <form class="d-inline" method="post" action="{{url_for('search_results', session_id=session_id, keywords=keywords, page=page + 1)}}">
+              <button type="submit" class="btn btn-primary">Next <i class="fas fa-chevron-right"></i></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <style>
+      /* Additional styles for results page */
+      .pagination-container {
+        margin: 20px 0;
+      }
+      
+      .page-indicator {
+        display: inline-block;
+        margin: 0 15px;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      
+      .product-card {
+        transition: all 0.3s ease;
+      }
+      
+      .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      }
+      
+      .product-img-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+        overflow: hidden;
+      }
+      
+      .product-meta {
+        margin: 10px 0;
+      }
+      
+      .product-price {
+        color: #e74c3c;
+        font-size: 18px;
+        font-weight: bold;
+        margin-right: 15px;
+      }
+      
+      .product-id {
+        color: #7f8c8d;
+        font-size: 14px;
+      }
+      
+      .view-details-btn {
+        margin-top: 15px;
+      }
+      
+      .result-stats {
+        color: #7f8c8d;
+      }
+      
+      .d-inline {
+        display: inline-block;
+      }
+    </style>
+  </body>
+</html>

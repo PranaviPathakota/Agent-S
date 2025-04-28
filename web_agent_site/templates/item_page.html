@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <link rel="icon" href="data:,">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{product_info.Title}} | Agent-S</title>
+  </head>
+  <body>
+    <div class="container py-5">
+      <!-- Header with instruction -->
+      <div class="row top-buffer">
+        <div class="col-md-12">
+          <div id="logo" class="text-center">
+            <h2><i class="fas fa-shopping-cart"></i> Agent-S</h2>
+          </div>
+          <div id="instruction-text" class="text-center">
+            <h4>Instruction:<br>{{ instruction_text }}</h4>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Navigation buttons -->
+      <div class="row top-buffer navigation-buttons">
+        <div class="col-md-6">
+          <form method="post" action="{{url_for('index', session_id=session_id)}}">
+            <button type="submit" class="btn btn-success"><i class="fas fa-search"></i> New Search</button>
+          </form>
+        </div>
+        <div class="col-md-6 text-right">
+          <form method="post" action="{{url_for('search_results', session_id=session_id, keywords=keywords, page=page)}}">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-chevron-left"></i> Back to Results</button>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Product details -->
+      <div class="row top-buffer product-details-container">
+        <!-- Product images section -->
+        <div class="col-md-5 mb-4 mb-md-0">
+          <div class="product-image-container">
+            <img id="product-image" src="{{product_info.MainImage}}" class="item-page-img" alt="{{product_info.Title}}">
+          </div>
+          
+          <!-- Product options -->
+          {% for option_name, option_contents in product_info.options.items() %}
+            <div class="product-options">
+              <h4 class="option-title">{{ option_name }}</h4>
+              <div class="radio-toolbar">
+                {% for option_content in option_contents %}
+                  {% set current_options = options.copy() %}
+                  {% set _ = current_options.update({option_name: option_content}) %}
+                  {% set url = url_for('item_page', session_id=session_id, asin=asin, keywords=keywords, page=page, options=current_options) %}
+                  <input type="radio" id="radio_{{ option_name }}{{ loop.index0 }}" name="{{ option_name }}" value="{{ option_content }}" data-url="{{ url }}">
+                  <label for="radio_{{ option_name }}{{ loop.index0 }}">{{ option_content }}</label>
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        
+        <!-- Product details section -->
+        <div class="col-md-5">
+          <div class="product-info-box">
+            <h2 class="product-title">{{product_info.Title}}</h2>
+            
+            <div class="product-meta">
+              <div class="price-rating">
+                <div class="product-price">{{product_info.Price}}</div>
+                <div class="product-rating">
+                  <span class="rating-stars">
+                    {% set rating = product_info.Rating | float %}
+                    {% for i in range(5) %}
+                      {% if i < rating | int %}
+                        <i class="fas fa-star"></i>
+                      {% elif i == rating | int and (rating - rating | int) >= 0.5 %}
+                        <i class="fas fa-star-half-alt"></i>
+                      {% else %}
+                        <i class="far fa-star"></i>
+                      {% endif %}
+                    {% endfor %}
+                  </span>
+                  <span class="rating-value">{{product_info.Rating}}</span>
+                </div>
+              </div>
+              
+              <div class="product-id">
+                ID: {{asin}}
+              </div>
+            </div>
+            
+            <!-- Tab buttons for product details -->
+            <div class="product-tabs">
+              <div class="row">
+                <div class="col-sm-3" name="description">
+                  <form method="post" action="{{ url_for('item_sub_page', session_id=session_id, asin=asin, keywords=keywords, page=page, sub_page='Description', options=options) }}">
+                    <button class="btn btn-primary tab-btn" type="submit"><i class="fas fa-info-circle"></i> Description</button>
+                  </form>
+                </div>
+                <div class="col-sm-3" name="bulletpoints">
+                  <form method="post" action="{{ url_for('item_sub_page', session_id=session_id, asin=asin, keywords=keywords, page=page, sub_page='Features', options=options) }}">
+                    <button class="btn btn-primary tab-btn" type="submit"><i class="fas fa-list"></i> Features</button>
+                  </form>
+                </div>
+                <div class="col-sm-3" name="reviews">
+                  <form method="post" action="{{ url_for('item_sub_page', session_id=session_id, asin=asin, keywords=keywords, page=page, sub_page='Reviews', options=options) }}">
+                    <button class="btn btn-primary tab-btn" type="submit"><i class="fas fa-comment"></i> Reviews</button>
+                  </form>
+                </div>
+                {% if show_attrs %}
+                <div class="col-sm-3" name="attributes">
+                  <form method="post" action="{{ url_for('item_sub_page', session_id=session_id, asin=asin, keywords=keywords, page=page, sub_page='Attributes', options=options) }}">
+                    <button class="btn btn-primary tab-btn" type="submit"><i class="fas fa-tags"></i> Attributes</button>
+                  </form>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Buy button section -->
+        <div class="col-md-2">
+          <div class="purchase-box">
+            <form method="post" action="{{url_for('done', session_id=session_id, asin=asin, options=options )}}">
+              <button type="submit" class="btn btn-lg purchase"><i class="fas fa-shopping-cart"></i> Buy Now</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <style>
+      /* Additional styles for item page */
+      .product-details-container {
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        padding: 20px;
+      }
+      
+      .product-image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      
+      .product-info-box {
+        padding: 0 15px;
+      }
+      
+      .product-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #2c3e50;
+      }
+      
+      .product-meta {
+        margin-bottom: 30px;
+      }
+      
+      .price-rating {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      
+      .product-price {
+        font-size: 24px;
+        font-weight: bold;
+        color: #e74c3c;
+      }
+      
+      .product-rating {
+        display: flex;
+        align-items: center;
+      }
+      
+      .rating-stars {
+        color: #f39c12;
+        margin-right: 5px;
+      }
+      
+      .product-id {
+        color: #7f8c8d;
+        font-size: 14px;
+      }
+      
+      .product-options {
+        margin-top: 20px;
+      }
+      
+      .option-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #2c3e50;
+      }
+      
+      .product-tabs {
+        margin-top: 30px;
+      }
+      
+      .tab-btn {
+      width: 100%;
+      margin-bottom: 10px;
+      white-space: nowrap;  /* Prevent text from wrapping */
+      overflow: visible;    /* Allow text to overflow the button */
+      padding-left: 8px;    /* Reduce left padding slightly */
+      padding-right: 8px;   /* Reduce right padding slightly */
+      font-size: 12px;      /* Slightly smaller font size */
+      text-overflow: clip;  /* Don't use ellipsis */
+    }
+
+    /* Make the product tabs section have more width */
+    .product-tabs .row {
+      margin-left: -5px;
+      margin-right: -5px;
+    }
+
+    .product-tabs .col-sm-3 {
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+
+    /* Adjust icon spacing */
+    .tab-btn i {
+      margin-right: 4px;
+    }
+      .purchase-box {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+      }
+      
+      .navigation-buttons {
+        margin-bottom: 20px;
+      }
+      
+      @media (max-width: 768px) {
+        .product-meta {
+          flex-direction: column;
+        }
+        
+        .price-rating {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        
+        .product-rating {
+          margin-top: 10px;
+        }
+      }
+    </style>
+    
+    <script>
+      $(document).ready(function() {
+        $('input:radio').each(function() {
+          let options = JSON.parse(`{{ options | tojson }}`);
+          let optionValues = $.map(options, function(value, key) { return value });
+          
+          if (optionValues.includes($(this).val())) {
+            $(this).prop('checked', true);
+
+            let option_to_image = JSON.parse(`{{ product_info.option_to_image | tojson }}`);
+            let image_url = option_to_image[$(this).val()];
+
+            if (image_url) {
+              $("#product-image").attr("src", image_url);
+            }
+          }
+          
+          // reload with updated options
+          this.addEventListener("click", function() {
+            window.location.href = this.dataset.url;
+          });
+        });
+      });
+    </script>

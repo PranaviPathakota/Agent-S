@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <link rel="icon" href="data:,">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Description | Agent-S</title>
+  </head>
+  <body>
+    <div class="container py-5">
+      <!-- Header with instruction -->
+      <div class="row top-buffer">
+        <div class="col-md-12">
+          <div id="logo" class="text-center">
+            <h2><i class="fas fa-shopping-cart"></i> Agent-S</h2>
+          </div>
+          <div id="instruction-text" class="text-center">
+            <h4>Instruction:<br>{{ instruction_text }}</h4>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Navigation buttons -->
+      <div class="row top-buffer navigation-buttons">
+        <div class="col-md-6">
+          <form method="post" action="{{url_for('index', session_id=session_id)}}">
+            <button type="submit" class="btn btn-success"><i class="fas fa-search"></i> New Search</button>
+          </form>
+        </div>
+        <div class="col-md-6 text-right">
+          <form method="post" action="{{url_for('item_page', session_id=session_id, asin=asin, keywords=keywords, page=page, options=options)}}">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-chevron-left"></i> Back to Product</button>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Product description content -->
+      <div class="row top-buffer">
+        <div class="col-md-12">
+          <div class="content-card">
+            <div class="content-header">
+              <h3><i class="fas fa-info-circle"></i> Product Description</h3>
+            </div>
+            <div class="description-content">
+              <p class="product-info">{{product_info.Description}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <style>
+      /* Additional styles for description page */
+      .navigation-buttons {
+        margin-bottom: 20px;
+      }
+      
+      .content-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        margin-bottom: 20px;
+        overflow: hidden;
+      }
+      
+      .content-header {
+        background-color: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid #e9ecef;
+      }
+      
+      .content-header h3 {
+        margin: 0;
+        color: var(--secondary-color);
+        font-weight: 600;
+      }
+      
+      .description-content {
+        padding: 20px;
+        line-height: 1.8;
+      }
+      
+      .product-info {
+        font-size: 16px;
+        text-align: justify;
+      }
+    </style>
+  </body>
+</html>
